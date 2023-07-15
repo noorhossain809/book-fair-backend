@@ -1,62 +1,45 @@
+/* eslint-disable @typescript-eslint/no-this-alias */
 import { Schema, model } from 'mongoose';
 import { IUser, UserModel } from './user.interface';
-import ApiError from '../../../errors/ApiError';
-import { StatusCodes } from 'http-status-codes';
+import bcrypt from 'bcrypt';
+import config from '../../../config';
 
 const userSchema = new Schema<IUser, UserModel>(
   {
-    phoneNumber: {
+    email: {
       type: String,
-      required: true,
       unique: true,
-    },
-    role: {
-      type: String,
       required: true,
-      enum: ['seller', 'buyer'],
     },
     password: {
       type: String,
       required: true,
     },
-    name: {
-      type: {
-        firstName: {
-          type: String,
-          required: true,
-        },
-        lastName: {
-          type: String,
-          required: true,
-        },
-      },
-    },
-    address: {
-      type: String,
-      required: true,
-    },
-    budget: {
-      type: Number,
-    },
-    income: {
-      type: Number,
-      default: 0,
-    },
   },
   {
     timestamps: true,
-    toJSON: {
-      virtuals: true,
-    },
   }
 );
 
-// Pre-save hook to check uniqueness of phoneNumber
-userSchema.pre<IUser>('save', async function (next) {
-  const existingUser = await User.findOne({ phoneNumber: this.phoneNumber });
-  if (existingUser) {
-    throw new ApiError(StatusCodes.CONFLICT, 'Phone number already exists');
-  }
+userSchema.statics.isExistUser = async function (
+  email: string
+): Promise<Pick<IUser, 'email' | 'password' | 'id'> | null> {
+  return await User.findOne({ email }, { email: 1, password: 1, id: 1 });
+};
+
+userSchema.statics.isPasswordMatch = async function (
+  givenPassword: string,
+  savedPassword: string
+): Promise<boolean> {
+  return await bcrypt.compare(givenPassword, savedPassword);
+};
+
+userSchema.pre('save', async function (next) {
+  const user = this;
+  user.password = await bcrypt.hash(
+    user.password,
+    Number(config.default_salt_rounds)
+  );
   next();
 });
 

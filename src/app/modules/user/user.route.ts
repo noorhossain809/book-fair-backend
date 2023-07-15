@@ -1,17 +1,18 @@
 import express from 'express';
-import { UserController } from './user.controller';
 import validateRequest from '../../../middleweres/validateRequest';
 import { UserValidation } from './user.validation';
+import { UserController } from './user.controller';
 const router = express.Router();
 
-router
-  .get('/', UserController.getAllUsers)
-  .get('/:id', UserController.getSingleUser)
-  .patch(
-    '/:id',
-    validateRequest(UserValidation.updateUserZodSchema),
-    UserController.updateUser
-  )
-  .delete('/:id', UserController.deleteUser);
+router.post(
+  '/signup',
+  validateRequest(UserValidation.createUserZodSchema),
+  UserController.createUser
+);
+router.post(
+  '/login',
+  validateRequest(UserValidation.loginUserZodSchema),
+  UserController.loginUser
+);
 
 export const UserRoutes = router;

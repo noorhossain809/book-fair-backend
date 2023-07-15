@@ -1,18 +1,15 @@
 import { Model } from 'mongoose';
 
-export type userName = {
-  firstName: string;
-  lastName: string;
-};
-
 export type IUser = {
-  phoneNumber: string;
-  role: 'seller' | 'buyer';
+  id: string;
+  email: string;
   password: string;
-  name: userName;
-  address: string;
-  budget: number;
-  income: number;
 };
 
-export type UserModel = Model<IUser>;
+export type UserModel = {
+  isExistUser(email: string): Promise<Pick<IUser, 'email' | 'password' | 'id'>>;
+  isPasswordMatch(
+    givenPassword: string,
+    savedPassword: string
+  ): Promise<boolean>;
+} & Model<IUser>;

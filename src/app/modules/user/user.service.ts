@@ -1,35 +1,48 @@
+import { StatusCodes } from 'http-status-codes';
+import ApiError from '../../../errors/ApiError';
 import { IUser } from './user.interface';
 import { User } from './user.model';
+import { jwtHelpers } from '../../../helper/jwtHelpers';
+import config from '../../../config';
+import { Secret } from 'jsonwebtoken';
 
-const getAllUsers = async () => {
-  const result = await User.find({});
-
+const createUser = async (user: IUser) => {
+  const result = await User.create(user);
   return result;
 };
-const getSingleUser = async (id: string): Promise<IUser | null> => {
-  const result = await User.findById(id);
 
-  return result;
-};
-const updateUser = async (
-  id: string,
-  payload: IUser
-): Promise<IUser | null> => {
-  const result = await User.findOneAndUpdate({ _id: id }, payload, {
-    new: true,
-  });
+const loginUser = async (payload: IUser) => {
+  const { email, password } = payload;
 
-  return result;
-};
-const deleteUser = async (id: string): Promise<IUser | null> => {
-  const result = await User.findByIdAndDelete(id);
+  // check existing user
+  const isExistUser = await User.isExistUser(email);
 
-  return result;
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
+  }
+
+  // password match
+  if (
+    isExistUser.password &&
+    !(await User.isPasswordMatch(password, isExistUser.password))
+  ) {
+    throw new ApiError(StatusCodes.UNAUTHORIZED, 'Password does not match');
+  }
+
+  // create access token
+  const { email: userEmail, id } = isExistUser;
+  const accessToken = jwtHelpers.createToken(
+    { userEmail, id },
+    config.jwt.secret as Secret,
+    config.jwt.expires_in as string
+  );
+
+  return {
+    accessToken,
+  };
 };
 
 export const UserService = {
-  getAllUsers,
-  getSingleUser,
-  updateUser,
-  deleteUser,
+  createUser,
+  loginUser,
 };
