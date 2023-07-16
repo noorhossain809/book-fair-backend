@@ -28,7 +28,20 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+const getSingleUser = catchAsync(async (req: Request, res: Response) => {
+  const id = req.params.id;
+  const result = await UserService.getSingleUser(id);
+
+  sendResponse(res, {
+    statusCode: StatusCodes.OK,
+    success: true,
+    message: 'User retrieved successfully',
+    data: result,
+  });
+});
+
 export const UserController = {
   createUser,
   loginUser,
+  getSingleUser,
 };

@@ -14,5 +14,6 @@ router.post(
   validateRequest(UserValidation.loginUserZodSchema),
   UserController.loginUser
 );
+router.get('/:id', UserController.getSingleUser);
 
 export const UserRoutes = router;

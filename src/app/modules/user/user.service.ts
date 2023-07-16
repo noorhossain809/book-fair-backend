@@ -42,7 +42,14 @@ const loginUser = async (payload: IUser) => {
   };
 };
 
+const getSingleUser = async (id: string): Promise<IUser | null> => {
+  const result = await User.findById(id);
+
+  return result;
+};
+
 export const UserService = {
   createUser,
   loginUser,
+  getSingleUser,
 };
