@@ -12,4 +12,6 @@ const router = express_1.default.Router();
 router.get('/:id', book_controller_1.BookController.getSingleBook);
 router.post('/create-book', (0, validateRequest_1.default)(book_validation_1.BookValidation.createBookZodSchema), book_controller_1.BookController.createBook);
 router.get('/', book_controller_1.BookController.getAllBooks);
+router.patch('/:id', book_controller_1.BookController.updateBook);
+router.delete('/:id', book_controller_1.BookController.deleteBook);
 exports.BookRoutes = router;

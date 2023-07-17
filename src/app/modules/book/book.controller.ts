@@ -40,8 +40,7 @@ const getSingleBook = catchAsync(async (req: Request, res: Response) => {
 const updateBook = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
   const { ...updateData } = req.body;
-  const token = req.headers.authorization;
-  const result = await BookService.updateBook(id, updateData, token);
+  const result = await BookService.updateBook(id, updateData);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
@@ -52,8 +51,7 @@ const updateBook = catchAsync(async (req: Request, res: Response) => {
 });
 const deleteBook = catchAsync(async (req: Request, res: Response) => {
   const id = req.params.id;
-  const token = req.headers.authorization;
-  const result = await BookService.deleteBook(id, token);
+  const result = await BookService.deleteBook(id);
 
   sendResponse(res, {
     statusCode: StatusCodes.OK,
