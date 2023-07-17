@@ -16,6 +16,9 @@ const createBookZodSchema = zod_1.z.object({
         publicationDate: zod_1.z.string({
             required_error: 'publication date is required',
         }),
+        user: zod_1.z.string({
+            required_error: 'User date is required',
+        }),
     }),
 });
 exports.BookValidation = {

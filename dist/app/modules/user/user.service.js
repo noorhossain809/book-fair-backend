@@ -41,7 +41,12 @@ const loginUser = (payload) => __awaiter(void 0, void 0, void 0, function* () {
         accessToken,
     };
 });
+const getSingleUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const result = yield user_model_1.User.findById(id);
+    return result;
+});
 exports.UserService = {
     createUser,
     loginUser,
+    getSingleUser,
 };

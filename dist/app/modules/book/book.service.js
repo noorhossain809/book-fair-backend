@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BookService = void 0;
 const book_model_1 = require("./book.model");
 const createBook = (payload) => __awaiter(void 0, void 0, void 0, function* () {
-    const result = yield book_model_1.Book.create(payload);
+    const result = (yield book_model_1.Book.create(payload)).populate('user');
     return result;
 });
 const getAllBooks = () => __awaiter(void 0, void 0, void 0, function* () {
