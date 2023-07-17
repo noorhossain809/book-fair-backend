@@ -21,77 +21,77 @@ const getASingleBook = async (id: string) => {
   const result = await Book.findOne({ _id: id });
   return result;
 };
-const updateBook = async (id: string, payload: IBook) => {
-  // const isExistBook = await Book.findOne({ _id: id });
+const updateBook = async (id: string, token: any, payload: IBook) => {
+  const isExistBook = await Book.findOne({ _id: id });
 
-  // const user = isExistBook?.user.toString();
+  const user = isExistBook?.user.toString();
 
-  // // verify token
-  // let verifiedToken = null;
+  // verify token
+  let verifiedToken = null;
 
-  // try {
-  //   verifiedToken = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
-  // } catch (error) {
-  //   throw new ApiError(StatusCodes.FORBIDDEN, 'Invalid access token');
-  // }
+  try {
+    verifiedToken = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
+  } catch (error) {
+    throw new ApiError(StatusCodes.FORBIDDEN, 'Invalid access token');
+  }
 
-  // const { userEmail, id: userId } = verifiedToken;
+  const { userEmail, id: userId } = verifiedToken;
 
-  // const isExistUser = await User.isExistUser(userEmail);
-  // if (!isExistUser) {
-  //   throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
-  // }
+  const isExistUser = await User.isExistUser(userEmail);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
+  }
 
-  // if (user === userId) {
-  //   const result = await Book.findOneAndUpdate({ _id: id }, payload, {
-  //     new: true,
-  //   });
-  //   return result;
-  // } else {
-  //   throw new ApiError(
-  //     StatusCodes.NOT_FOUND,
-  //     'You cannot updated for this book'
-  //   );
-  // }
+  if (user === userId) {
+    const result = await Book.findOneAndUpdate({ _id: id }, payload, {
+      new: true,
+    });
+    return result;
+  } else {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      'You cannot updated for this book'
+    );
+  }
 
-  const result = await Book.findOneAndUpdate({ _id: id }, payload, {
-    new: true,
-  });
-  return result;
+  // const result = await Book.findOneAndUpdate({ _id: id }, payload, {
+  //   new: true,
+  // });
+  // return result;
 };
-const deleteBook = async (id: string) => {
-  // const isExistBook = await Book.findOne({ _id: id });
+const deleteBook = async (id: string, token: any) => {
+  const isExistBook = await Book.findOne({ _id: id });
 
-  // const user = isExistBook?.user.toString();
+  const user = isExistBook?.user.toString();
 
-  // // verify token
-  // let verifiedToken = null;
+  // verify token
+  let verifiedToken = null;
 
-  // try {
-  //   verifiedToken = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
-  // } catch (error) {
-  //   throw new ApiError(StatusCodes.FORBIDDEN, 'Invalid access token');
-  // }
+  try {
+    verifiedToken = jwtHelpers.verifyToken(token, config.jwt.secret as Secret);
+  } catch (error) {
+    throw new ApiError(StatusCodes.FORBIDDEN, 'Invalid access token');
+  }
 
-  // const { userEmail, id: userId } = verifiedToken;
+  const { userEmail, id: userId } = verifiedToken;
 
-  // const isExistUser = await User.isExistUser(userEmail);
-  // if (!isExistUser) {
-  //   throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
-  // }
+  const isExistUser = await User.isExistUser(userEmail);
+  if (!isExistUser) {
+    throw new ApiError(StatusCodes.NOT_FOUND, 'User does not exist');
+  }
 
-  // if (user === userId) {
-  //   const result = await Book.findOneAndDelete({ _id: id });
-  //   return result;
-  // } else {
-  //   throw new ApiError(
-  //     StatusCodes.NOT_FOUND,
-  //     'You cannot deleted for this book'
-  //   );
-  // }
+  if (user === userId) {
+    const result = await Book.findOneAndDelete({ _id: id });
+    return result;
+  } else {
+    throw new ApiError(
+      StatusCodes.NOT_FOUND,
+      'You cannot deleted for this book'
+    );
+  }
 
-  const result = await Book.findOneAndDelete({ _id: id });
-  return result;
+  // const result = await Book.findOneAndDelete({ _id: id });
+  // return result;
 };
 
 export const BookService = {
